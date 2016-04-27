@@ -4,6 +4,12 @@ class Address
   @state = nil
   @location = nil
 
+  def initialize(city, state, location)
+    @city = city
+    @state = state
+    @location = location
+  end
+
   def mongoize
     {city:@city, state:@state, loc: @location.mongoize}
   end
@@ -24,11 +30,9 @@ class Address
     elsif address_or_hash.is_a?(Address)
       return address_or_hash
     elsif address_or_hash.is_a?(Hash)
-      address = Address.new()
-      address.city = address_or_hash[:city]
-      address.state = address_or_hash[:state]
       location_hash = address_or_hash[:loc]
-      address.location = Point.new(location_hash[:coordinates][0], location_hash[:coordinates][1])
+      location = Point.new(location_hash[:coordinates][0], location_hash[:coordinates][1])
+      address = Address.new(address_or_hash[:city], address_or_hash[:state], location)
       return address
     end
   end
