@@ -20,6 +20,16 @@ class Event
   end
 
   def miles
+    return nil if distance.nil? || units.nil?
+    if units.eql?("miles")
+      return distance
+    elsif units.eql?("kilometers")
+      return distance * 0.621371
+    elsif units.eql?("meters")
+      return distance * 0.000621371
+    elsif units.eql?("yards")
+      return distance * 0.000568182
+    end
     nil
   end
 end
