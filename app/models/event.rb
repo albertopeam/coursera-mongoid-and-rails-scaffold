@@ -7,6 +7,9 @@ class Event
 
   embedded_in :parent, polymorphic: true, touch: true
 
+  validates :order, presence: true
+  validates :name, presence: true
+
   def meters
     return nil if distance.nil? || units.nil?
     if units.eql?("meters")
