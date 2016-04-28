@@ -7,4 +7,6 @@ class RacerInfo
   field :g, as: :gender, type: String
   field :yr, as: :birth_year, type: Integer
   field :res, as: :residence, type: Address
+
+  embedded_in :parent, polymorphic: true
 end
