@@ -1,7 +1,8 @@
 class LegResult
   include Mongoid::Document
   field :secs, type: Float
-  @secs = nil
+
+  embedded_in :entrant
 
   after_initialize do |doc|
     calc_ave
