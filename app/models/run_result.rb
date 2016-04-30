@@ -1,12 +1,11 @@
 class RunResult < LegResult
 
-  field :mmile, as: :minute_mile,type: Float
-  field :my_ave, type: Float
+  field :mmile, as: :minute_mile, type: Float
 
   def calc_ave
     if event && secs
-      meters = event.meters
-      self.my_ave = meters.nil? ? nil : 12.1
+      miles = event.miles
+      self.mmile = miles.nil? ? nil : (secs/60) / miles
     end
   end
 end
