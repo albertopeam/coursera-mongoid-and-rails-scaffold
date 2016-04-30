@@ -10,5 +10,18 @@ class Entrant
   field :gender, type: Placing
   field :group, type: Placing
 
-  embeds_many :results, class_name: 'LegResult', order: [:"event.o".asc]
+  embeds_many :results, class_name: 'LegResult',
+                        order: [:"event.o".asc],
+                        after_add: :update_total,
+                        after_remove: :update_total
+
+
+
+  def update_total(result)
+    sum = 0
+    results.each do |res|
+      sum += res.secs
+    end
+    self.secs = sum
+  end
 end
