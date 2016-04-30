@@ -24,4 +24,9 @@ class Entrant
     end
     self.secs = sum
   end
+
+  def the_race
+    return race.race if race
+    nil
+  end
 end
