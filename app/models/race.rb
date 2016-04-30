@@ -11,13 +11,14 @@ class Race
   scope :upcoming, -> { where(:date => {:$gte => Date.current}) }
   scope :past, -> { where(:date => {:$lt => Date.current}) }
 
+  #example of default events for race
   DEFAULT_EVENTS = {"swim"=>{:order=>0, :name=>"swim", :distance=>1.0, :units=>"miles"},
                   "t1"=>  {:order=>1, :name=>"t1"},
                   "bike"=>{:order=>2, :name=>"bike", :distance=>25.0, :units=>"miles"},
                   "t2"=>  {:order=>3, :name=>"t2"},
                   "run"=> {:order=>4, :name=>"run", :distance=>10.0, :units=>"kilometers"}}
 
-
+  #adds through meta methods for default events
   DEFAULT_EVENTS.keys.each do |name|
     define_method("#{name}") do
       event=events.select {|event| name==event.name}.first
@@ -36,12 +37,14 @@ class Race
     end
   end
 
+  #invokes through meta the creation of default events defined in DEFAULT_EVENTS
   def Race.default
     Race.new do |race|
       DEFAULT_EVENTS.keys.each {|leg|race.send("#{leg}")}
     end
   end
 
+  #adds through meta city and state accessors
   ["city", "state"].each do |action|
     define_method("#{action}") do
       self.location ? self.location.send("#{action}") : nil
