@@ -12,36 +12,36 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
 
   around :each do |example|
     if $continue
-      $continue = false 
-      example.run 
+      $continue = false
+      example.run
       $continue = true unless example.exception
     else
       example.skip
     end
   end
 
-  context "rq01" do 
+  context "rq01" do
     it "Race class has Integer field next_bib that defaults to 0" do
       expect(Race).to have_field(:next_bib).of_type(Integer)
       expect(Race.new).to respond_to(:next_bib)
     end
 
     it "Point Model has an instance method called next_bib that increments value" do
-      expect(Race.new.method(:next_bib).parameters.flatten.count).to eq 0      
+      expect(Race.new.method(:next_bib).parameters.flatten.count).to eq 0
       race = Race.new
       expect(race[:next_bib]).to eql 0
-      (1..9).each {|i| 
+      (1..9).each {|i|
         expect(race.next_bib).to eql i
       }
     end
-  end  
+  end
 
-  context "rq02" do 
+  context "rq02" do
     it "Race class has a get_group instance method" do
       expect(Race.new).to respond_to(:get_group)
-      expect((Race.new.method(:get_group).parameters.flatten - [:opt, :req]).count).to eq 1            
-      expect(Race.new.method(:get_group).parameters.flatten).to include(:req)        
-      expect(Race.new.method(:get_group).parameters.flatten).to_not include(:opt)        
+      expect((Race.new.method(:get_group).parameters.flatten - [:opt, :req]).count).to eq 1
+      expect(Race.new.method(:get_group).parameters.flatten).to include(:req)
+      expect(Race.new.method(:get_group).parameters.flatten).to_not include(:opt)
     end
 
     it "get_group method creates Placing object whose name is group by age of racer" do
@@ -65,7 +65,7 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
     end
   end
 
-  context "rq03" do 
+  context "rq03" do
     before :all do
       Racer.collection.delete_many
       Race.collection.delete_many
@@ -74,18 +74,18 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
 
     it "Race class has a create_entrant instance method" do
       expect(Race.new).to respond_to(:create_entrant)
-      expect((Race.new.method(:create_entrant).parameters.flatten - [:opt, :req]).count).to eq 1            
-      expect(Race.new.method(:create_entrant).parameters.flatten).to include(:req)        
-      expect(Race.new.method(:create_entrant).parameters.flatten).to_not include(:opt)        
+      expect((Race.new.method(:create_entrant).parameters.flatten - [:opt, :req]).count).to eq 1
+      expect(Race.new.method(:create_entrant).parameters.flatten).to include(:req)
+      expect(Race.new.method(:create_entrant).parameters.flatten).to_not include(:opt)
     end
 
     it "if new Entrant not valid, no persist or change will occur and error will be returned" do
       expect(race = Race.create).to_not be_nil
-      race.events.build(o:0, n:"swim", d:1, u:"miles") 
-      race.events.build(o:1, n:"t1")                   
-      race.events.build(o:2, n:"bike", d:25, u:"miles") 
+      race.events.build(o:0, n:"swim", d:1, u:"miles")
+      race.events.build(o:1, n:"t1")
+      race.events.build(o:2, n:"bike", d:25, u:"miles")
       race.events.build(o:3, n:"t2")
-      race.events.build(o:4, n:"run", d:10, u:"kilometers") 
+      race.events.build(o:4, n:"run", d:10, u:"kilometers")
       expect(race[:next_bib]).to eql 0
       expect(entrant = race.create_entrant(Racer.new)).to_not be_nil
       expect(entrant).to_not be_valid
@@ -104,7 +104,7 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
       expect(racer = Racer.create(first_name:"cat", last_name:"inhat", gender:"M", birth_year:1940)).to_not be_nil
       expect(racer.races.count).to eql 0
       expect(race = Race.create(name:"Oakland 10K", date:Date.new(2015, 12, 21))).to_not be_nil
-      race.events.build(o:0, n:"swim", d:1, u:"miles") 
+      race.events.build(o:0, n:"swim", d:1, u:"miles")
       expect(race[:next_bib]).to eql 0
       expect(race.entrants.count).to eql 0
 
@@ -141,12 +141,12 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
     end
   end
 
-  context "rq04" do 
+  context "rq04" do
     before :each do
-      race1=Race.create(:name=>"Yesterday's Entrant",:date=>Date.yesterday) 
-      race2=Race.create(:name=>"Today's Entrant",:date=>Date.today)              
-      race3=Race.create(:name=>"Tomorrow's Entrant",:date=>Date.tomorrow)    
-      racer=Racer.create(:first_name=>"thing",:last_name=>"two",:gender=>"M",:birth_year=>1960)              
+      race1=Race.create(:name=>"Yesterday's Entrant",:date=>Date.yesterday)
+      race2=Race.create(:name=>"Today's Entrant",:date=>Date.today)
+      race3=Race.create(:name=>"Tomorrow's Entrant",:date=>Date.tomorrow)
+      racer=Racer.create(:first_name=>"thing",:last_name=>"two",:gender=>"M",:birth_year=>1960)
       race1.create_entrant(racer)
       race2.create_entrant(racer)
       race3.create_entrant(racer)
@@ -154,14 +154,14 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
 
     it "Entrant has upcoming scope that returns all future item in query" do
       expect(results = Entrant.upcoming).to_not be_nil
-      results.each {|r| 
+      results.each {|r|
         expect(r.race_date >= Date.today)
       }
     end
 
     it "Entrant has past scope that returns all past items in query" do
       expect(results = Entrant.past).to_not be_nil
-      results.each {|r| 
+      results.each {|r|
         expect(r.race_date < Date.today)
       }
     end
@@ -172,11 +172,11 @@ describe "Module #3 Summative: Cross-Collection Service Requests" do
       Racer.collection.delete_many
       Race.collection.delete_many
       Entrant.collection.delete_many
-      @race1=Race.create(:name=>"Tomorrow's Race 1",:date=>Date.tomorrow) 
-      race2=Race.create(:name=>"Yesterday's Race",:date=>Date.yesterday)              
-      race3=Race.create(:name=>"Tomorrow's Race 2",:date=>Date.tomorrow)    
-      @racer=Racer.create(:first_name=>"thing",:last_name=>"two",:gender=>"M",:birth_year=>1960)              
-      race3.create_entrant(@racer)      
+      @race1=Race.create(:name=>"Tomorrow's Race 1",:date=>Date.tomorrow)
+      race2=Race.create(:name=>"Yesterday's Race",:date=>Date.yesterday)
+      race3=Race.create(:name=>"Tomorrow's Race 2",:date=>Date.tomorrow)
+      @racer=Racer.create(:first_name=>"thing",:last_name=>"two",:gender=>"M",:birth_year=>1960)
+      race3.create_entrant(@racer)
     end
 
     it "Race implements a class method upcoming_available_to" do

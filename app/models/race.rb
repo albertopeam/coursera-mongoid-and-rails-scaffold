@@ -68,6 +68,7 @@ class Race
 
   def next_bib
     self[:next_bib] += 1
+    save
     self[:next_bib]
   end
 
@@ -85,25 +86,14 @@ class Race
   def create_entrant(racer)
     entrant = Entrant.new
 
-    race_ref = entrant.race
-    race_ref._id = self.id
-    race_ref.name = self.name
-    race_ref.date = self.date
-    entrant.race._id = self.id
+    entrant.build_race(self.attributes.symbolize_keys.slice(:_id, :n, :date))
 
-    racer_info = entrant.racer
-    racer_info.racer_id = racer.id
-    racer_info.first_name = racer.first_name
-    racer_info.last_name = racer.last_name
-    racer_info.gender = racer.gender
-    racer_info.birth_year = racer.birth_year
-    racer_info.city = racer.city
-    racer_info.state = racer.state
+    entrant.build_racer(racer.info.attributes)
 
-    entrant.first_name = racer.first_name
-    entrant.last_name = racer.last_name
-    entrant.gender = racer.gender
-    entrant.birth_year = racer.birth_year
+    # entrant.first_name = racer.first_name
+    # entrant.last_name = racer.last_name
+    # entrant.gender = racer.gender
+    # entrant.birth_year = racer.birth_year
 
     entrant.group = get_group(racer)
 
@@ -113,11 +103,7 @@ class Race
 
     if entrant.validate
       entrant.bib = next_bib
-      puts entrant.inspect
-      puts entrant.racer.inspect
-      puts entrant.race.inspect
-      puts entrant.results.inspect
-      entrants.push(entrant)
+      entrant.save
     end
     entrant
   end
