@@ -1,6 +1,8 @@
 class Race
   include Mongoid::Document
   include Mongoid::Timestamps
+
+  field :next_bib, as: :next_bib, type: Integer, default: 0
   field :n, as: :name, type: String
   field :date, as: :date, type: Date
   field :loc, as: :location, type: Address
@@ -54,6 +56,11 @@ class Race
       object.send("#{action}=", name)
       self.location=object
     end
+  end
+
+  def next_bib
+    self[:next_bib] += 1
+    self[:next_bib] 
   end
 
 end
