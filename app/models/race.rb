@@ -8,7 +8,11 @@ class Race
   field :loc, as: :location, type: Address
 
   embeds_many :events, as: :parent, order: [:order.asc]
-  has_many :entrants, foreign_key: "race._id", order: [:secs.asc, :bib.asc], dependent: :delete
+  has_many :entrants,
+            class_name: 'Entrant',
+            foreign_key: "race._id",
+            order: [:secs.asc, :bib.asc],
+            dependent: :delete
 
   scope :upcoming, -> { where(:date => {:$gte => Date.current}) }
   scope :past, -> { where(:date => {:$lt => Date.current}) }
@@ -46,6 +50,10 @@ class Race
     end
   end
 
+  def Racer.upcoming_available_to(racer)
+
+  end
+
   #adds through meta city and state accessors
   ["city", "state"].each do |action|
     define_method("#{action}") do
@@ -81,6 +89,7 @@ class Race
     race_ref._id = self.id
     race_ref.name = self.name
     race_ref.date = self.date
+    entrant.race._id = self.id
 
     racer_info = entrant.racer
     racer_info.racer_id = racer.id
@@ -104,9 +113,11 @@ class Race
 
     if entrant.validate
       entrant.bib = next_bib
-      entrants << entrant
-    else
-      puts entrant.errors.inspect
+      puts entrant.inspect
+      puts entrant.racer.inspect
+      puts entrant.race.inspect
+      puts entrant.results.inspect
+      entrants.push(entrant)
     end
     entrant
   end
