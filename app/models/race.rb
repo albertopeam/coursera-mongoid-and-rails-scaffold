@@ -51,7 +51,8 @@ class Race
   end
 
   def Race.upcoming_available_to(racer)
-    nil
+    upcoming_race_ids = racer.races.upcoming.pluck(:race).map {|r| r[:_id]}
+    Race.upcoming.nin(id: upcoming_race_ids)
   end
 
   #adds through meta city and state accessors
