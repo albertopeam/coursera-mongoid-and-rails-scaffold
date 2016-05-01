@@ -73,4 +73,9 @@ class Race
       Placing.demongoize(:name=>name)
     end
   end
+
+  def create_entrant(racer)
+    entrant = Entrant.new
+    entrant 
+  end
 end
