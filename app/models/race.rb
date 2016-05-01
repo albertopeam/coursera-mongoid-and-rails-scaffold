@@ -76,6 +76,38 @@ class Race
 
   def create_entrant(racer)
     entrant = Entrant.new
-    entrant 
+
+    race_ref = entrant.race
+    race_ref._id = self.id
+    race_ref.name = self.name
+    race_ref.date = self.date
+
+    racer_info = entrant.racer
+    racer_info.racer_id = racer.id
+    racer_info.first_name = racer.first_name
+    racer_info.last_name = racer.last_name
+    racer_info.gender = racer.gender
+    racer_info.birth_year = racer.birth_year
+    racer_info.city = racer.city
+    racer_info.state = racer.state
+
+    entrant.first_name = racer.first_name
+    entrant.last_name = racer.last_name
+    entrant.gender = racer.gender
+    entrant.birth_year = racer.birth_year
+
+    entrant.group = get_group(racer)
+
+    events.each do |event|
+      entrant.send("#{event.name}=", event)
+    end
+
+    if entrant.validate
+      entrant.bib = next_bib
+      entrants << entrant
+    else
+      puts entrant.errors.inspect
+    end
+    entrant
   end
 end
