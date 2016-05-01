@@ -51,7 +51,7 @@ class Race
   end
 
   def Racer.upcoming_available_to(racer)
-
+    nil
   end
 
   #adds through meta city and state accessors
