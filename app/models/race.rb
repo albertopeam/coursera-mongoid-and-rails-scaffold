@@ -50,7 +50,7 @@ class Race
     end
   end
 
-  def Racer.upcoming_available_to(racer)
+  def Race.upcoming_available_to(racer)
     nil
   end
 
